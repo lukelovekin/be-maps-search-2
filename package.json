@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "init": "yarn install && yarn build && yarn generate",
+    "init": "yarn install && yarn generate && yarn build",
     "lint": "eslint --fix",
     "test": "jest",
     "test:cov": "jest --coverage",

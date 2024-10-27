@@ -4,4 +4,6 @@ describe('LoggerService', () => {
   it('should be defined', () => {
     expect(new LoggerService('')).toBeDefined();
   });
+
+  // TODO test loggerService methods
 });

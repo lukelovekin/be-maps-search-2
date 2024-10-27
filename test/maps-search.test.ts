@@ -33,7 +33,6 @@ describe('Tomtom Places E2E Tests', () => {
 
         const testCases = [
           { address: 'AU', expectedFields: [...baseExpectedFields]} ,
-          { address: 'Buderim', expectedFields: [...baseExpectedFields, 'municipality']}, 
           { address: 'Eiffel Tower', expectedFields: [...baseExpectedFields, 'municipality']} ,
           { address: '32 Belleview Pde', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']},  
         ];

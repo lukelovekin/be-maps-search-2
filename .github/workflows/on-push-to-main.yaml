@@ -1,0 +1,14 @@
+name: On push to main
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    uses: ./.github/_build-and-test.yaml
+
+  # build_docker job  
+
+  # deploy job

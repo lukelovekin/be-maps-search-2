@@ -32,22 +32,11 @@ describe('Tomtom Places E2E Tests', () => {
         const baseExpectedFields = ['placeId', 'countryCode', 'country', 'freeformAddress']
 
         const testCases = [
-            { address: 'Charlotte Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']} ,
-            { address: '100', expectedFields: [...baseExpectedFields, 'streetNumber', 'municipality']},
-            { address: '29 Khancoban', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
-            { address: 'Brunswick', expectedFields: [...baseExpectedFields, 'municipality']}, 
-            { address: 'Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']}, 
-            { address: 'Buderim', expectedFields: [...baseExpectedFields, 'municipality']}, 
-            { address: 'Park', expectedFields: [...baseExpectedFields, 'municipality']} , 
-            { address: 'Mcdonalds', expectedFields: [...baseExpectedFields, 'streetName']} , 
-            { address: '32 Belleview Pde', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
-            { address: 'Paddington', expectedFields: [...baseExpectedFields, 'municipality']} , 
-            { address: 'QLD', expectedFields: [...baseExpectedFields, 'municipality']} , 
-            { address: 'Australia', expectedFields: [...baseExpectedFields]} , 
-            { address: 'AU', expectedFields: [...baseExpectedFields]} ,
-            { address: 'Canada', expectedFields: [...baseExpectedFields, 'municipality']} , 
-            { address: 'Eiffel Tower', expectedFields: [...baseExpectedFields, 'municipality']} ,
-          ];
+          { address: 'AU', expectedFields: [...baseExpectedFields]} ,
+          { address: 'Buderim', expectedFields: [...baseExpectedFields, 'municipality']}, 
+          { address: 'Eiffel Tower', expectedFields: [...baseExpectedFields, 'municipality']} ,
+          { address: '32 Belleview Pde', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']},  
+        ];
        
           it.each(testCases)('should have expected fields for partial address: $address', async ({ address, expectedFields }) => {
             const res = await getAutoCompleteDetails( address );

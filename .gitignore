@@ -1,0 +1,11 @@
+# Dependency directories
+node_modules/
+
+# Build directories
+generated
+
+.env
+.vscode
+
+coverage
+dist

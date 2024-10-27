@@ -6,8 +6,7 @@ on:
       - main
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
-    uses: ./.github/_build-and-test.yaml
+    uses: ./.github/workflows/_build-and-test.yaml
 
   # build_docker job  
 

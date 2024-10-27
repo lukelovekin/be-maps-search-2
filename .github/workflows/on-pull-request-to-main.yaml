@@ -9,6 +9,6 @@ on:
 
 jobs:
   build-and-test:
-    uses: ./.github/_build-and-test.yaml
+    uses: ./.github/workflows/_build-and-test.yaml
     
   # build_docker job

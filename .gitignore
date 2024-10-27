@@ -3,9 +3,8 @@ node_modules/
 
 # Build directories
 generated
+coverage
+dist
 
 .env
 .vscode
-
-coverage
-dist

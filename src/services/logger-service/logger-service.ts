@@ -1,36 +1,35 @@
 import winston from 'winston'
 
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(   
+        winston.format.timestamp(),
+        winston.format.json()   
+      )
+    })
+  ]
+});
 export class LoggerService {
-  private logger = winston.createLogger({
-    transports: [
-      new winston.transports.Console({
-        format: winston.format.combine(   
-          winston.format.timestamp(),
-          winston.format.json()   
-        )
-      })
-    ]
-  });
-
-  private readonly path: string;
-
-  constructor(path: string) {
+  constructor(private readonly path: string) {
     this.path = path
   }
 
   error(message: string) {
-    this.logger.error(message, this.path);
+    // TODO Notify monitoring tool (New relic e.g)
+    logger.error(message, this.path);
   }
 
   warn(message: string) {
-    this.logger.warn(message, this.path);
+    // TODO Maybe Notify monitoring tool (New relic e.g)
+    logger.warn(message, this.path);
   }
 
   info(message: string) {
-    this.logger.info(message, this.path);
+    logger.info(message, this.path);
   }
 
   debug(message: string) {
-    this.logger.debug(message, this.path);
+    logger.debug(message, this.path);
   }
 }

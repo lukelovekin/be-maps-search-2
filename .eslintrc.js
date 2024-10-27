@@ -6,10 +6,6 @@ module.exports = {
     'node_modules',
     '**/.github',
     'dist',
-    // 'coverage',
-    // '*.min.js',
-    // '*.min.css',
-    // '**/.husky
   ],
   extends: ['plugin:@typescript-eslint/recommended'],
   plugins: ['@typescript-eslint'],
@@ -22,8 +18,8 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-use-before-define': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-unused-vars': 'warn', //TODO remove
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-unused-vars': 'error', 
     '@typescript-eslint/member-delimiter-style': 0,
     '@typescript-eslint/no-unused-vars': 0,
     'padding-line-between-statements': [

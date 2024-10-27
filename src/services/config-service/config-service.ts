@@ -9,7 +9,7 @@ export class ConfigService {
   readonly fuzzySearchMaxRetries: number;
   readonly fuzzySearchRetryInSecs: number;
 
-  // TODO replace confidential .env values with SSM path values instead and retieve via SSM
+  // TODO retrieve confidential values from SSM instead
 
   constructor() {
     config()

@@ -29,14 +29,44 @@ describe('Tomtom Places E2E Tests', () => {
 
             expect(res).rejects.toThrow()
         })
+        const baseExpectedFields = ['placeId', 'countryCode', 'country', 'freeformAddress']
+
+        const testCases = [
+            { address: 'Charlotte Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']} ,
+            { address: '100', expectedFields: [...baseExpectedFields, 'streetNumber', 'municipality']},
+            { address: '29 Khancoban', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
+            { address: 'Brunswick', expectedFields: [...baseExpectedFields, 'municipality']}, 
+            { address: 'Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']}, 
+            { address: 'Buderim', expectedFields: [...baseExpectedFields, 'municipality']}, 
+            { address: 'Park', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Mcdonalds', expectedFields: [...baseExpectedFields, 'streetName']} , 
+            { address: '32 Belleview Pde', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
+            { address: 'Paddington', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'QLD', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Australia', expectedFields: [...baseExpectedFields]} , 
+            { address: 'AU', expectedFields: [...baseExpectedFields]} ,
+            { address: 'Canada', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Eiffel Tower', expectedFields: [...baseExpectedFields, 'municipality']} ,
+          ];
+       
+          it.each(testCases)('should have expected fields for partial address: $address', async ({ address, expectedFields }) => {
+            const res = await getAutoCompleteDetails( address );
+
+            const firstRes = res[0];
+        
+            for (const field of expectedFields) {
+              expect(firstRes).toHaveProperty(field);
+            }
+          });
+
+          //TODO add negative tests
     })
 
-    // TODO test for AU addresses only
-    // TODO expect(firstRes).toHaveProperty('streetNumber') when number is given
 
 
-    describe('getPlaceAutocomplete aka tomtom fuzzySearch', () => {
+    describe('getPlaceAutocomplete (aka tomtom fuzzySearch)', () => {
         const config = new ConfigService()
+
         let tomtomClient: TomTomClient
 
         beforeAll(() => {
@@ -49,12 +79,14 @@ describe('Tomtom Places E2E Tests', () => {
             expect(res.results).toStrictEqual([])
         })
 
-        it('should only return Australian address', async () => {
+        it('should only return Australian addresses', async () => {
             const res = await tomtomClient.fuzzySearch('Gloucester');
+
             expect(res.results?.every((result) => result.address?.country === 'Australia'))
 
         })
 
+          //TODO add negative tests
     })
 
 })

@@ -4,6 +4,16 @@ info:
   version: '1.0.0'
 components:
   schemas:
+    BaseSearchOptions:
+      type: object
+      properties:
+        limit:
+          type: number
+        countrySet:
+          type: string
+    SearchOptions:
+      $ref: '#/components/schemas/BaseSearchOptions'
+      additionalProperties: true
     MapsSearchRS:
       type: array
       items:

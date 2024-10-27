@@ -1,40 +1,92 @@
-import { config } from 'dotenv'
 import { describe } from '@jest/globals'
-import { getPlaceAutocomplete } from '../src/maps-api'
 import { getAutoCompleteDetails } from '../src'
-
-config();
+import { TomTomClient } from '../src/clients/tomtom/tomtom-client'
+import { ConfigService } from '../src/services/config-service/config-service'
 
 // These are end-to-end tests and need an api key
 describe('Tomtom Places E2E Tests', () => {
     describe('getAutoCompleteDetails', () => {
         it ('returns a promise', () => {
             const res = getAutoCompleteDetails('Charlotte Street')
+
             expect(res).toBeInstanceOf(Promise)
         })
 
         it('can fetch from the autocomplete api', async () => {
             const res = await getAutoCompleteDetails('Charlotte Street')
+
             const firstRes = res[0];
+
             expect(firstRes).toHaveProperty('placeId')
-            expect(firstRes).toHaveProperty('streetNumber')
             expect(firstRes).toHaveProperty('countryCode')
             expect(firstRes).toHaveProperty('country')
             expect(firstRes).toHaveProperty('freeformAddress')
             expect(firstRes).toHaveProperty('municipality')
         })
-    })
-
-    describe('getPlaceAutocomplete', () => {
-
-        it('handles no results', async () => {
-            const res = await getPlaceAutocomplete(process.env.TOMTOM_API_KEY, 'asfasffasfasafsafs');
-            expect(res).toStrictEqual([])
-        })
 
         it('handles error', async () => {
-            expect(getPlaceAutocomplete(process.env.TOMTOM_API_KEY, '')).rejects.toThrow()
+            const res = getAutoCompleteDetails('')
+
+            expect(res).rejects.toThrow()
         })
+        const baseExpectedFields = ['placeId', 'countryCode', 'country', 'freeformAddress']
+
+        const testCases = [
+            { address: 'Charlotte Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']} ,
+            { address: '100', expectedFields: [...baseExpectedFields, 'streetNumber', 'municipality']},
+            { address: '29 Khancoban', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
+            { address: 'Brunswick', expectedFields: [...baseExpectedFields, 'municipality']}, 
+            { address: 'Street', expectedFields: [...baseExpectedFields, 'streetName', 'municipality']}, 
+            { address: 'Buderim', expectedFields: [...baseExpectedFields, 'municipality']}, 
+            { address: 'Park', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Mcdonalds', expectedFields: [...baseExpectedFields, 'streetName']} , 
+            { address: '32 Belleview Pde', expectedFields: [...baseExpectedFields, 'streetNumber', 'streetName', 'municipality']}, 
+            { address: 'Paddington', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'QLD', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Australia', expectedFields: [...baseExpectedFields]} , 
+            { address: 'AU', expectedFields: [...baseExpectedFields]} ,
+            { address: 'Canada', expectedFields: [...baseExpectedFields, 'municipality']} , 
+            { address: 'Eiffel Tower', expectedFields: [...baseExpectedFields, 'municipality']} ,
+          ];
+       
+          it.each(testCases)('should have expected fields for partial address: $address', async ({ address, expectedFields }) => {
+            const res = await getAutoCompleteDetails( address );
+
+            const firstRes = res[0];
+        
+            for (const field of expectedFields) {
+              expect(firstRes).toHaveProperty(field);
+            }
+          });
+
+          //TODO add negative tests
+    })
+
+
+
+    describe('getPlaceAutocomplete (aka tomtom fuzzySearch)', () => {
+        const config = new ConfigService()
+
+        let tomtomClient: TomTomClient
+
+        beforeAll(() => {
+            tomtomClient = new TomTomClient(config);
+          });
+
+        it('should handle no results', async () => {
+            const res = await tomtomClient.fuzzySearch('asfasffasfasafsafs');
+
+            expect(res.results).toStrictEqual([])
+        })
+
+        it('should only return Australian addresses', async () => {
+            const res = await tomtomClient.fuzzySearch('Gloucester');
+
+            expect(res.results?.every((result) => result.address?.country === 'Australia'))
+
+        })
+
+          //TODO add negative tests
     })
 
 })

@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: Maps Search API
+  version: '1.0.0'
+components:
+  schemas:
+    BaseSearchOptions:
+      type: object
+      properties:
+        limit:
+          type: number
+        countrySet:
+          type: string
+    SearchOptions:
+      $ref: '#/components/schemas/BaseSearchOptions'
+      additionalProperties: true
+    MapsSearchRS:
+      type: array
+      items:
+        $ref: '#/components/schemas/MapSearchResult'
+    MapSearchResult:
+      type: object
+      properties:
+        placeId:
+          type: string
+        streetNumber:
+          type: string
+        streetName:
+          type: string
+        municipality:
+          type: string
+        municipalitySubdivision:
+          type: string
+        municipalitySecondarySubdivision:
+          type: string
+        neighbourhood:
+          type: string
+        countrySecondarySubdivision:
+          type: string
+        countryTertiarySubdivision:
+          type: string
+        countrySubdivision:
+          type: string
+        countrySubdivisionName:
+          type: string
+        countryCode:
+          type: string
+        country:
+          type: string
+        countryCodeISO3:
+          type: string
+        freeformAddress:
+          type: string
+        localName:
+          type: string

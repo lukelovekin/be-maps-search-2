@@ -1,0 +1,393 @@
+openapi: 3.0.0
+info:
+  title: TomTom API 25/10/2024
+  version: '1.0.0'
+  description: 'Documentation: https://developer.tomtom.com/search-api/documentation/search-service/fuzzy-search'
+servers:
+- url: 'https://api.tomtom.com'
+paths:
+  /search/{versionNumber}/search/{query}.{ext}:
+    get:
+      parameters:
+        - name: versionNumber
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: query
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: ext
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FuzzySearchRS'
+        '400':
+          description: 'Bad Request: one or more parameters were incorrectly specified.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRS'
+        '403':
+          description: 'Forbidden: possible causes include: Service requires SSL, Not authorized Rate or volume limit exceeded Unknown referrer'
+        '404':
+          description: 'Not Found: the HTTP request method (GET, POST, etc) or path is incorrect.'
+        '405':
+          description: 'Method Not Allowed: the HTTP method (GET, POST, etc) is not supported for this request.'
+        '429':
+          description: 'Too Many Requests: Rate or volume limit exceeded'
+        '596':
+          description: 'Not Found: the HTTP request method (GET, POST, etc) or path is incorrect.'
+        '500, 501, 503':
+          description: 'An error occurred while processing the request. Please try again later.'
+components:
+  schemas:
+    FuzzySearchRS:
+          type: object
+          properties:
+            summary:
+              type: object
+              properties:
+                query:
+                  type: string
+                queryType:
+                  type: string
+                  enum: ['NEARBY', 'NON_NEAR']
+                queryTime:
+                  type: number
+                numResults:
+                  type: integer
+                offset:
+                  type: integer
+                totalresults:
+                  type: integer
+                fuzzyLevel:
+                  type: number
+                geoBias:
+                  $ref: '#/components/schemas/LatLon'
+                queryIntent:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/QueryIntent'
+            results:
+              type: array
+              items:
+                $ref: '#/components/schemas/FuzzySearchResult'
+    FuzzySearchResult:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ['POI', 'Street', 'Geography', 'Point Address', 'Address Range', 'Cross Street']
+        id:
+          type: string
+        score:
+          type: number
+        info:
+          type: string
+        dist:
+          type: number
+        entityType:
+          type: string
+          enum: ['Country', 'CountrySubdivision', 'CountrySecondarySubdivision', 'CountryTertiarySubdivision', 'Municipality', 'MunicipalitySubdivision', 'MunicipalitySecondarySubdivision', 'Neighbourhood', 'PostalCodeArea']
+        poi:
+          $ref: '#/components/schemas/POI'
+        relatedPois:
+          type: array
+          items:
+            type: object
+            properties:
+              relationType:
+                type: string
+                enum: ['child', 'parent']
+              id:
+                type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        position:
+          $ref: '#/components/schemas/LatLon'
+        mapcodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mapcode'
+        boundingBox:
+          type: object
+          properties:
+            topLeftPoint:
+              $ref: '#/components/schemas/LatLon'
+            btmRightPoint:
+              $ref: '#/components/schemas/LatLon'
+        entryPoints:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: ['main', 'minor']
+              functions:
+                type: array
+                items:
+                  type: string
+              position:
+                $ref: '#/components/schemas/LatLon'
+        addressRanges:
+          type: array
+          items:
+            type: object
+            properties:
+              rangeLeft:
+                type: string
+              rangeRight:
+                type: string
+              from:
+                $ref: '#/components/schemas/LatLon'
+              to:
+                $ref: '#/components/schemas/LatLon'
+        chargingPark:
+          type: object
+          properties:
+            connectors:
+              type: array
+              items:
+                type: object
+                properties:
+                  connectorType:
+                    type: string
+                  ratedPowerKW:
+                    type: number
+                  currentA:
+                    type: number
+                  currentType:
+                    type: string
+                  voltageV:
+                    type: number
+        dataSources:
+          type: object
+          properties:
+            chargingAvailability:
+              type: object
+              properties:
+                id:
+                  type: string
+            parkingAvailability:
+              type: object
+              properties:
+                id:
+                  type: string
+            fuelPrice:
+              type: object
+              properties:
+                id:
+                  type: string
+            geometry:
+              type: object
+              properties:
+                id:
+                  type: string
+                sourceName:
+                  type: string
+        fuelTypes:
+          type: array
+          items:
+            type: string
+            enum: ['Petrol', 'LPG', 'Diesel', 'Biodiesel', 'DieselForCommercialVehicles', 'E85', 'LNG', 'CNG', 'Hydrogen', 'AdBlue']
+        vehicleTypes:
+          type: object
+        viewport:
+          type: object
+          properties:
+            topLeftPoint:
+              $ref: '#/components/schemas/LatLon'
+            btmRightPoint:
+              $ref: '#/components/schemas/LatLon'
+    Address:
+      type: object
+      properties:
+        streetNumber:
+          type: string
+        streetName:
+          type: string
+        municipality:
+          type: string
+        municipalitySubdivision:
+          type: string
+        municipalitySecondarySubdivision:
+          type: string
+        neighbourhood:
+          type: string
+        countrySecondarySubdivision:
+          type: string
+        countryTertiarySubdivision:
+          type: string
+        countrySubdivision:
+          type: string
+        countrySubdivisionName:
+          type: string
+        countryCode:
+          type: string
+        country:
+          type: string
+        countryCodeISO3:
+          type: string
+        freeformAddress:
+          type: string
+        localName:
+          type: string
+    POI:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        brands:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+        url:
+          type: string
+        categorySet:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+        openingHours:
+          type: object
+          properties:
+            mode:
+              type: string
+            timeRanges:
+              type: array
+              items:
+                type: object
+                properties:
+                  startTime:
+                    $ref: '#/components/schemas/Time'
+                  endTime:
+                    $ref: '#/components/schemas/Time'
+        classifications:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              names:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nameLocale:
+                      type: string
+                    name:
+                      type: string
+        timeZone:
+          $ref: '#/components/schemas/TimeZone'
+    LatLon:
+      type: object
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+    Time:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        hour:
+          type: integer
+        minute:
+          type: integer
+    TimeZone:
+      type: object
+      properties:
+        ianaId:
+          type: string
+    Mapcode:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ['Local', 'International', 'Alternative']
+        fullMapcode:
+          type: string
+        territory:
+          type: string
+        code:
+          type: string
+    QueryIntent:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ['COORDINATE', 'NEARBY', 'W3W', 'BOOKMARK']
+        details:
+          $ref: '#/components/schemas/QueryIntentDetails'
+    QueryCoordinateIntent:
+      type: object
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+    QueryNearbyIntent:
+      type: object
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+        query:
+          type: string
+        text:
+          type: string
+    QueryW3WIntent:
+      type: object
+      properties:
+        address:
+          type: string
+    QueryBookmarkIntent:
+      type: object
+      properties:
+        bookmark:
+          type: string
+    QueryIntentDetails:
+      oneOf:
+        - $ref: '#/components/schemas/QueryCoordinateIntent'
+        - $ref: '#/components/schemas/QueryNearbyIntent'
+        - $ref: '#/components/schemas/QueryW3WIntent'
+        - $ref: '#/components/schemas/QueryBookmarkIntent'
+    ErrorRS:
+      type: object
+      properties:
+        errorText:
+          type: string
+        detailedError:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            target:
+              type: string
+        httpStatusCode:
+          type: string
+   

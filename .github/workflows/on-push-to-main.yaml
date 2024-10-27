@@ -1,0 +1,13 @@
+name: On push to main
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/_build-and-test.yaml
+
+  # build_docker job  
+
+  # deploy job
